@@ -1,6 +1,7 @@
 'use client'
 
 import { scrapeAndStoreProduct } from "@/lib/actions";
+import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react"
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -25,6 +26,8 @@ const isValidAmazonProductURL = (url: string) => {
 }
 
 const Searchbar = () => {
+  const router = useRouter();
+
   const [searchPrompt, setSearchPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,6 +56,11 @@ const Searchbar = () => {
 
       // Scrape the product page
       const product = await scrapeAndStoreProduct(searchPrompt);
+
+      if (product?.path) {
+        router.push(product.path);
+      }
+
     } catch (error) {
       console.log(error);
     } finally {
